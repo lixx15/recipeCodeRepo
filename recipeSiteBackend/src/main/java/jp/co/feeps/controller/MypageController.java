@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpSession;
 import jp.co.feeps.DTO.MypageDto;
 import jp.co.feeps.DTO.accountDto;
+import jp.co.feeps.service.AccountService;
 import jp.co.feeps.service.MypageService;
 
 @RestController
@@ -17,29 +18,28 @@ public class MypageController {
 
     @Autowired
     private MypageService mypageService;
+
+    @Autowired
+    private AccountService accountService;
 	
 	
 	// マイページ情報の取得
     @GetMapping("/mypage")
     public ResponseEntity<MypageDto> getMypage(HttpSession session) {
-    	
-    	accountDto aDto = new accountDto();
-    	
-    	aDto.setEmail("user1@example.com");
-    	aDto.setUserId(1);
-    	aDto.setUserName("user1");
-    	aDto.setPassword("pass1");
-    	
-//    	// debug用ユーザー
-//    	session.setAttribute("registeredUser", aDto);
-//    	
-//    	// sessionにユーザー情報がなければ404を返す
-//		accountDto sessionUser = accountService.getSessionUser(session);
-//		if (sessionUser == null) {
-//			return ResponseEntity.notFound().build();
-//		}
+
+   	// // debug用ユーザー
+    //     aDto.setEmail("user1@example.com");
+    //     aDto.setUserId(1);
+    //     aDto.setUserName("user1");
+    //     aDto.setPassword("pass1");
+   	
+   	// sessionにユーザー情報がなければ404を返す
+		accountDto sessionUser = accountService.getSessionUser(session);
+		if (sessionUser == null) {
+			return ResponseEntity.notFound().build();
+		}
 		
-        MypageDto mypageDto = mypageService.getUserMypage(aDto);
+        MypageDto mypageDto = mypageService.getUserMypage(sessionUser);
         
         return ResponseEntity.ok(mypageDto);
     }
