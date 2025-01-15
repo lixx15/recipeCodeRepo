@@ -9,13 +9,13 @@ import jakarta.persistence.Table;
 
 //【修正】テーブル名変更
 @Entity
-@Table(name = "users2")
+@Table(name = "users")
 public class Users {
 
 	//【修正】カラム名変更
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
+	@Column(name = "id")
 	private int userId;
 
 	@Column(name = "user_name")

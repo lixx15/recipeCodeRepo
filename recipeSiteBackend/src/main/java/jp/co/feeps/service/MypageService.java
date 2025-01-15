@@ -1,6 +1,5 @@
 package jp.co.feeps.service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,17 +14,17 @@ import org.springframework.util.CollectionUtils;
 import jp.co.feeps.DTO.MypageDto;
 import jp.co.feeps.DTO.RecipeDto;
 import jp.co.feeps.DTO.accountDto;
-import jp.co.feeps.model.Comments;
+import jp.co.feeps.model.Comment;
 import jp.co.feeps.model.Favorites;
-import jp.co.feeps.model.Recipes;
+import jp.co.feeps.model.Recipe;
 import jp.co.feeps.repository.CommentRepository;
 import jp.co.feeps.repository.FavoriteRepository;
-import jp.co.feeps.repository.RecipeRepository;
+import jp.co.feeps.repository.RecipeInfoRepository;
 
 @Service
 public class MypageService {
     @Autowired
-    private RecipeRepository recipeRepository;
+    private RecipeInfoRepository recipeInfoRepository;
 
     @Autowired
     private FavoriteRepository favoriteRepository;
@@ -43,7 +42,7 @@ public class MypageService {
     	int userId = user.getUserId();
         
         // ログインユーザーが投稿したレシピを取得しRecipeDtoに変換
-        List<RecipeDto> postedRecipes = Optional.ofNullable(recipeRepository.findByUser_UserId(userId))
+        List<RecipeDto> postedRecipes = Optional.ofNullable(recipeInfoRepository.findByUser_UserId(userId))
         										.orElse(Collections.emptyList()) // nullの場合は空のリストを代入
 												.stream()
 												.map(recipes -> convertToRecipeDto(recipes, userId))
@@ -58,7 +57,7 @@ public class MypageService {
         
 
         // ログインユーザーのタイムラインを作成
-        Map<LocalDateTime, String> timeLine = createTimeLine(userId);
+        Map<String, String> timeLine = createTimeLine(userId);
         
         MypageDto mypageDto = new MypageDto();
         mypageDto.setUserId(userId);
@@ -77,17 +76,17 @@ public class MypageService {
      * @param userId ログインユーザーのユーザーId
      * @return recipeDto（レシピの基本情報及び、レシピが持つコメント数、お気に入り数など）
      */
-    public RecipeDto convertToRecipeDto(Recipes recipe, int userId) {
+    public RecipeDto convertToRecipeDto(Recipe recipe, int userId) {
     	RecipeDto recipesDto = new RecipeDto();
     	
     	// レシピIdでコメントの取得を行うためIDを保持
     	int recipeId = recipe.getId();
-        recipesDto.setId(recipeId);
+        recipesDto.setRecipe_id(recipeId);
         recipesDto.setTitle(recipe.getTitle());
-        recipesDto.setRecipeDescription(recipe.getRecipeDescription());
+        recipesDto.setRecipe_description(recipe.getRecipe_description());
         
         // レシピが持つコメントの取得を行いnullチェック後コメント数をセット
-        List<Comments> postedComments = commentRepository.findByRecipeId(recipeId);
+        List<Comment> postedComments = commentRepository.findByRecipeId(recipeId);
         if (CollectionUtils.isEmpty(postedComments)) {
         	recipesDto.setCommentCount(0);
         } else {
@@ -110,21 +109,21 @@ public class MypageService {
      * @param userId ログインユーザーのユーザーId
      * @return timeLineMap<LocalDateTime, String>（keyに日時、valueにログインユーザーに対して行われたアクション）
      */
-    public Map<LocalDateTime, String> createTimeLine(int userId) {
-        Map<LocalDateTime, String> timeLineMap = new TreeMap<>(Collections.reverseOrder());
+    public Map<String, String> createTimeLine(int userId) {
+        Map<String, String> timeLineMap = new TreeMap<>(Collections.reverseOrder());
 
         // ユーザーが投稿したレシピに対するコメントを収集
-        List<Recipes> userRecipes = recipeRepository.findByUser_UserId(userId);
-        for (Recipes recipe : userRecipes) {
-            List<Comments> comments = commentRepository.findByRecipeId(recipe.getId());
-            for (Comments comment : comments) {
+        List<Recipe> userRecipes = recipeInfoRepository.findByUser_UserId(userId);
+        for (Recipe recipe : userRecipes) {
+            List<Comment> comments = commentRepository.findByRecipeId(recipe.getId());
+            for (Comment comment : comments) {
                 String message = "「" + recipe.getTitle() + "」に " + comment.getUser().getUserName() + " さんがコメントしました: ";
-                timeLineMap.put(comment.getPostDatetime(), message);
+                timeLineMap.put(comment.getPost_datetime(), message);
             }
         }
 
         // ユーザーが投稿したレシピに対するお気に入りを収集
-        for (Recipes recipe : userRecipes) {
+        for (Recipe recipe : userRecipes) {
             List<Favorites> favorites = favoriteRepository.findByRecipeId(recipe.getId());
             for (Favorites favorite : favorites) {
                 String message = "「" + recipe.getTitle() + "」が " + favorite.getUser().getUserName() + " さんにお気に入り登録されました";
