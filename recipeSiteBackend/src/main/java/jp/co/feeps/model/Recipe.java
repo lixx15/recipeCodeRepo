@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -43,6 +44,9 @@ public class Recipe {
 	@OneToMany(mappedBy = "recipe")
     private List<RecipeIngredients> ingredients;
 	
+    @ManyToOne
+    @JoinColumn(name = "user_id") // 修正: カラム名に合わせる
+    private Users user;
 
 	public int getId() {
 		return id;
@@ -80,6 +84,14 @@ public class Recipe {
 		// TODO Auto-generated method stub
 		
 	}
+	
+    public Users getUser() {
+        return user;
+    }
+    
+    public void setUser(Users user) {
+        this.user = user;
+    }
 	
 	
 }
