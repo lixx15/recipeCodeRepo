@@ -20,6 +20,7 @@ import jp.co.feeps.DTO.RecipeDetailsDTO;
 import jp.co.feeps.DTO.TagDto;
 import jp.co.feeps.DTO.accountDto;
 import jp.co.feeps.model.Recipe;
+import jp.co.feeps.service.CollectionHandler;
 import jp.co.feeps.service.CommentHandler;
 import jp.co.feeps.service.recipeHandler;
 
@@ -28,7 +29,7 @@ import jp.co.feeps.service.recipeHandler;
 //http://localhost:15151/recipe_cite/getRecipeDetails?recipe_id=1&user_id=1
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class recipeController {
 	
 	@Autowired
@@ -37,8 +38,11 @@ public class recipeController {
 	@Autowired
 	private CommentHandler commentHandler;
 	
+	@Autowired
+	private CollectionHandler CollecttHandler;
+	
 	@RequestMapping("/getRecipeAll")
-	public ResponseEntity<List<Recipe>> Register(HttpSession session) {
+	public ResponseEntity<List<Recipe>> GetRecipeAll(HttpSession session) {
 		List<Recipe> recipeInfo = recipeServer.getAllrecipes();
 		
 		return ResponseEntity.ok(recipeInfo);
@@ -46,19 +50,19 @@ public class recipeController {
 	
 	
 	@RequestMapping("/findRecipeByTag")
-	public ResponseEntity<List<Recipe>> findRecipeByTag(@RequestParam List<String> tags, HttpSession session) {
+	public ResponseEntity<List<Recipe>> FindRecipeByTag(@RequestParam List<String> tags, HttpSession session) {
 	    List<Recipe> recipeInfo = recipeServer.findByTag(tags);
 	    return ResponseEntity.ok(recipeInfo);
 	}
 	
 	@RequestMapping("/findRecipeByTitle")
-	public ResponseEntity<List<Recipe>> findRecipeByTitle(@RequestParam String title, HttpSession session) {
+	public ResponseEntity<List<Recipe>> FindRecipeByTitle(@RequestParam String title, HttpSession session) {
 	    List<Recipe> recipeInfo = recipeServer.findByTittle(title);
 	    return ResponseEntity.ok(recipeInfo);
 	}
 	
 	@RequestMapping("/getRecipeDetails")
-	public ResponseEntity<RecipeDetailsDTO> getRecipeDetails(@RequestParam int recipe_id, @RequestParam int user_id , HttpSession session) {
+	public ResponseEntity<RecipeDetailsDTO> GetRecipeDetails(@RequestParam int recipe_id, @RequestParam int user_id , HttpSession session) {
 		RecipeDetailsDTO res1 = recipeServer.getRecipeDetails(recipe_id, user_id);
 		return ResponseEntity.ok(res1);
 	}
@@ -70,6 +74,14 @@ public class recipeController {
 			return ResponseEntity.ok().build();
 		// failed log
 		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping("/recipeCollected")
+	public ResponseEntity<Integer> RecipeCollected(@RequestParam String datetime, int recipe_id, HttpSession session) {
+		accountDto userInfo = (accountDto) session.getAttribute("registeredUser");
+		System.out.println(userInfo.getUserId());
+	    int res = CollecttHandler.submitComment(datetime, recipe_id, userInfo.getUserId());
+	    return ResponseEntity.ok(res);
 	}
 	
 	

@@ -24,10 +24,15 @@
           </li>
         </ul>
       </div>
+      <div>
+        <input type="text" v-model="newComment" placeholder="Add a comment">
+        <button @click="submitComment">Submit Comment</button>
+      </div>
       <button @click="toggleFavorite">{{ favoriteText }}</button>
     </div>
   </template>
   
+
   <script setup>
   import { ref, onMounted } from 'vue';
   import axios from 'axios';
@@ -40,9 +45,9 @@
     ingredients: [],
     comments: []
   });
+  const newComment = ref('');
   const favoriteText = ref('お気に入り');
   
-  // 访问路由参数
   const route = useRoute();
   
   onMounted(async () => {
@@ -55,18 +60,65 @@
         params: {
           recipe_id: route.query.recipeId,
           user_id: route.query.userId
-        }
+        },
+        withCredentials: true  // 添加 withCredentials
       });
       recipe.value = data;
-      favoriteText.value = recipe.value.collection_info ? 'Unfavorite' : 'Favorite';
+      updateFavoriteText();
     } catch (error) {
-      console.error('get recipe detials failed:', error);
+      console.error('get recipe details failed:', error);
     }
   }
   
-  function toggleFavorite() {
-    recipe.value.collection_info = !recipe.value.collection_info;
+  function updateFavoriteText() {
     favoriteText.value = recipe.value.collection_info ? 'Unfavorite' : 'Favorite';
-    // 理想情况下，这里应该更新服务器上的状态
+  }
+  
+  function formatDateForMySQL() {
+    const date = new Date();
+    const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
+    return formattedDate;
+  }
+  
+  async function toggleFavorite() {
+    try {
+      const response = await axios.get('http://localhost:15151/recipe_cite/recipeCollected', {
+        params: {
+          datetime: formatDateForMySQL(), 
+          recipe_id: route.query.recipeId
+        },
+        withCredentials: true  
+      });
+      console.error(response.data)
+      if(response.data === 2) {
+        alert("please login first");
+      } else if (response.status === 200) {
+        recipe.value.collection_info = !recipe.value.collection_info;
+        updateFavoriteText();
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  }
+  
+  async function submitComment() {
+    try {
+      const response = await axios.post('http://localhost:15151/recipe_cite/subbmitComment', {
+        content: newComment.value,
+        post_datetime: formatDateForMySQL(),
+        recipe_id: recipe.value.id
+      }, {
+        withCredentials: true 
+      });
+      if (response.status === 200) {
+        recipe.value.comments.push({
+          content: newComment.value,
+          post_datetime: new Date().toISOString()
+        });
+        newComment.value = '';  // Clear the input after successful submission
+      }
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+    }
   }
   </script>

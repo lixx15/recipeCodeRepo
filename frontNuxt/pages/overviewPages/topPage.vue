@@ -53,7 +53,7 @@ async function fetchUserInfo() {
           "http://localhost:15151/recipe_cite/session",
           { withCredentials: true }
         );
-        console.error(response.data)
+        //console.error(response.data)
         if (response.data) {
           userInfo.value = response.data;
         } else {
