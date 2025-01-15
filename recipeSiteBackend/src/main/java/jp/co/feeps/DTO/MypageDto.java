@@ -1,6 +1,5 @@
 package jp.co.feeps.DTO;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ public class MypageDto {
 	private String email;
 	private List<RecipeDto> postedRecipes; 
 	private List<RecipeDto> favoriteRecipes;
-	private Map<LocalDateTime, String> timeLineItem;
+	private Map<String, String> timeLineItem;
 	
     // Getter and Setter
     public int getUserId() {
@@ -58,11 +57,11 @@ public class MypageDto {
         this.favoriteRecipes = favoriteRecipes;
     }
     
-    public Map<LocalDateTime, String> getTimeLineItem() {
+    public Map<String, String> getTimeLineItem() {
         return timeLineItem;
     }
 
-    public void setTimeLineItem(Map<LocalDateTime, String> timeLineItem) {
+    public void setTimeLineItem(Map<String, String> timeLineItem) {
         this.timeLineItem = timeLineItem;
     }
 }
