@@ -10,7 +10,15 @@ public class RecipeDto {
     private int commentCount; //コメント数
     private int favoriteCount; // お気に入り数
 	
-	
+    public RecipeDto(int id, String title, String recipe_description)
+    {
+    	this.recipe_id = id;
+    	this.title = title;
+    	this.recipe_description = recipe_description;
+    }
+	public RecipeDto() {
+		// TODO Auto-generated constructor stub
+	}
 	public int getRecipe_id() {
 		return recipe_id;
 	}

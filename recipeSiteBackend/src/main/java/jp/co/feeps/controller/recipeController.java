@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 import jp.co.feeps.DTO.CommentsDto;
 import jp.co.feeps.DTO.IngredientsDto;
 import jp.co.feeps.DTO.RecipeDetailsDTO;
+import jp.co.feeps.DTO.RecipeDto;
 import jp.co.feeps.DTO.TagDto;
 import jp.co.feeps.DTO.accountDto;
 import jp.co.feeps.model.Recipe;
@@ -82,6 +83,12 @@ public class recipeController {
 		System.out.println(userInfo.getUserId());
 	    int res = CollecttHandler.submitComment(datetime, recipe_id, userInfo.getUserId());
 	    return ResponseEntity.ok(res);
+	}
+	
+	@RequestMapping("/getSimilarRecipes")
+	public ResponseEntity<List<RecipeDto>> GetSimilarRecipes(@RequestParam List<String> tags , HttpSession session) {
+		List<RecipeDto> res = recipeServer.GetSimilarRecipes(tags);
+		return ResponseEntity.ok(res);
 	}
 	
 	
