@@ -45,14 +45,14 @@ public class MypageService {
         List<RecipeDto> postedRecipes = Optional.ofNullable(recipeInfoRepository.findByUser_UserId(userId))
         										.orElse(Collections.emptyList()) // nullの場合は空のリストを代入
 												.stream()
-												.map(recipes -> convertToRecipeDto(recipes, userId))
+												.map(recipe -> convertToRecipeDto(recipe))
 												.collect(Collectors.toList());
         
         // ログインユーザーがお気に入りしたレシピを取得しRecipeDtoに変換
         List<RecipeDto> favoriteRecipes = Optional.ofNullable(favoriteRepository.findByUser_UserId(userId))
         										.orElse(Collections.emptyList())// nullの場合は空のリストを代入
 												.stream()
-												.map(favorite -> convertToRecipeDto(favorite.getRecipe(), userId))
+												.map(favorite -> convertToRecipeDto(favorite.getRecipe()))
 												.collect(Collectors.toList());
         
 
@@ -73,10 +73,9 @@ public class MypageService {
     /**
      * 取得したレシピのデータをDtoにsetする
      * @param recipe 取得したレシピリスト
-     * @param userId ログインユーザーのユーザーId
      * @return recipeDto（レシピの基本情報及び、レシピが持つコメント数、お気に入り数など）
      */
-    public RecipeDto convertToRecipeDto(Recipe recipe, int userId) {
+    public RecipeDto convertToRecipeDto(Recipe recipe) {
     	RecipeDto recipesDto = new RecipeDto();
     	
     	// レシピIdでコメントの取得を行うためIDを保持
@@ -94,7 +93,7 @@ public class MypageService {
         }
         
         // レシピが持つお気に入りの取得を行いnullチェック後お気に入り数をセット
-        List<Favorites> favoritedItem = favoriteRepository.findByUser_UserId(userId);
+        List<Favorites> favoritedItem = favoriteRepository.findByRecipeId(recipeId);
         if (CollectionUtils.isEmpty(favoritedItem)) {
         	recipesDto.setFavoriteCount(0);
         }else {
