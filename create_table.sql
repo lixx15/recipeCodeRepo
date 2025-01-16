@@ -76,9 +76,3 @@ INSERT INTO recipes (title, recipe_description, procedure_description, user_id) 
 ('Recipe3', 'Description3', 'Procedure3', 3),
 ('Recipe4', 'Description4', 'Procedure4', 4),
 ('Recipe5', 'Description5', 'Procedure5', 5);
-DROP DATABASE recipe;
-CREATE DATABASE recipe;
-DROP USER 'recipe_root'@'localhost';
-CREATE USER 'recipe_root'@'localhost' IDENTIFIED BY '123456';
-GRANT ALL PRIVILEGES ON recipe.* TO 'recipe_root'@'localhost';
-FLUSH PRIVILEGES;

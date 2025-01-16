@@ -1,5 +1,7 @@
 package jp.co.feeps.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +21,30 @@ public class CollectionHandler {
 	@Autowired
 	private UserRepository userRepository;
 	
-	public Boolean submitComment(String datetime, int recipe_id, int userId) {
+	public int submitComment(String datetime, int recipe_id, int user_id) {
 		// report null
-		Users user = userRepository.findById(userId).get();;
-		Recipe recipe = recipeinfoRepository.findById(recipe_id).get();
-
-		Collection newCollection = new Collection();
-		newCollection.setFavorite_datetime(datetime);
-		newCollection.setRecipe(recipe);
-		newCollection.setUser(user);
-		collectionRepository.save(newCollection);
-		return true;
+		Optional<Recipe> recipeAvailable = recipeinfoRepository.findById(recipe_id);
+		if (!recipeAvailable.isPresent())
+			return 1;
+		
+		Optional<Users> userAvailable = userRepository.findById(user_id);
+        if (!userAvailable.isPresent()) {
+            return 2; 
+        }
+		
+		Optional<Collection> result = collectionRepository.findByRecipeIdAndUserUserId(recipe_id, user_id);
+		if (result.isPresent()) {
+            // if found, delete
+            collectionRepository.delete(result.get());
+            return 0;
+        } else {
+            // else insert one record
+            Collection newCollection = new Collection();
+            newCollection.setFavorite_datetime(datetime);
+            newCollection.setRecipe(recipeAvailable.get());
+            newCollection.setUser(userAvailable.get());
+            collectionRepository.save(newCollection);
+            return 0; 
+        }
 	}
 }

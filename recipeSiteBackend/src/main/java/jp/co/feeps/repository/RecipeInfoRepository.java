@@ -32,5 +32,5 @@ public interface RecipeInfoRepository extends JpaRepository<Recipe, Integer>{
 	@Query("SELECT r.tags FROM Recipe r WHERE r.id = :recipeId")
     List<Tags> findTagsByRecipeId(@Param("recipeId") int recipeId);
 	
-	
+	List<Recipe> findByUser_UserId(int userId);
 }
