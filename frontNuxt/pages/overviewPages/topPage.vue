@@ -2,7 +2,7 @@
   <div>
     <nav>
       <ul>
-        <li><nuxt-link to="/">Home</nuxt-link></li>
+        <li><nuxt-link to="/account/home">Home</nuxt-link></li>
         <li>
           <input type="text" v-model="recipeQuery" placeholder="レシピ検索" />
           <button @click="searchRecipes">検索</button>
@@ -11,7 +11,7 @@
           <input type="text" v-model="tagQuery" placeholder="タグ検索" />
           <button @click="searchByTag">検索</button>
         </li>
-        <li><nuxt-link to="/my-page">マイページ</nuxt-link></li>
+        <li><nuxt-link to="/mypage">マイページ</nuxt-link></li>
       </ul>
       <div v-if="userInfo">welcome, {{ userInfo.name }}!</div>
       <button v-else @click="login">Login</button>
@@ -19,6 +19,7 @@
     <div>
       <h2>Featured Recipes</h2>
       <ul>
+        <!-- フォールレシピ展示  -->
         <li v-for="recipe in recipes" :key="recipe.id">
           <nuxt-link
             :to="{
@@ -35,6 +36,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";

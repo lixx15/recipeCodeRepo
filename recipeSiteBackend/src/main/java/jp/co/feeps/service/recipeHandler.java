@@ -3,6 +3,8 @@ package jp.co.feeps.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import jp.co.feeps.DTO.CollectionDto;
 import jp.co.feeps.DTO.CommentsDto;
 import jp.co.feeps.DTO.IngredientsDto;
 import jp.co.feeps.DTO.RecipeDetailsDTO;
+import jp.co.feeps.DTO.RecipeDto;
 import jp.co.feeps.DTO.TagDto;
 import jp.co.feeps.model.Collection;
 import jp.co.feeps.model.Comment;
@@ -33,24 +36,48 @@ public class recipeHandler {
 	@Autowired
 	private CollectionRepository collectionRepository;
 	
-	
+	// 一覧画面用
 	public List<Recipe> getAllrecipes() {
 		List<Recipe> allRecipes = recipeinfoRepository.findAll();
 		return allRecipes;
 	}
 	
-	
+	//タッグ検索
 	public List<Recipe> findByTag(List<String> tagList) {
 		List<Recipe> result = recipeinfoRepository.findRecipesWithAllTags(tagList, tagList.size());
 		return result;
 	}
 	
-	
+	//タイトル検索用
 	public List<Recipe> findByTittle(String Tittle) {
 		List<Recipe> result = recipeinfoRepository.findByTitleContaining(Tittle);
 		return result;
 	}
+	
+	public List<RecipeDto> GetSimilarRecipes(List<String> tags) {
+		List<Recipe> resultRiceps = recipeinfoRepository.findRecipesWithAllTags(tags, tags.size());
+		if(resultRiceps.size()==0 || (resultRiceps.size()<5 && tags.size()>1) )
+			tags.remove(tags.size() - 1);
+		List<Recipe> resultRicepsMi1 = recipeinfoRepository.findRecipesWithAllTags(tags, tags.size());
+		
+		Set<Integer> existingIds = resultRiceps.stream()
+                .map(Recipe::getId)
+                .collect(Collectors.toSet());
+		List<Recipe> filteredResultRicepsMi1 = resultRicepsMi1.stream()
+                .filter(recipe -> !existingIds.contains(recipe.getId()))
+                .collect(Collectors.toList());
 
+		// add filtered resultRiceps
+		resultRiceps.addAll(filteredResultRicepsMi1);
+		
+		return resultRiceps.stream()
+                .map(recipe -> new RecipeDto(
+                    recipe.getId(),
+                    recipe.getTitle(),
+                    recipe.getProcedure_description()
+                ))
+                .collect(Collectors.toList());
+	}
 	
 	public Recipe addRecipe(String name, String description, String procedure_description) {
         Recipe newRecipe = new Recipe();
@@ -60,6 +87,7 @@ public class recipeHandler {
         return recipeinfoRepository.save(newRecipe);
     }
 	
+	//filling all recipe's details(comment, collection, tag, ingreient)
 	public RecipeDetailsDTO getRecipeDetails(int recipe_id, int user_id) {
 		Recipe recipe = recipeinfoRepository.findById(recipe_id).get();
 		RecipeDetailsDTO dto = new RecipeDetailsDTO();
