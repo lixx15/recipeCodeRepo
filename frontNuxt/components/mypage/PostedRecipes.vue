@@ -2,7 +2,7 @@
     <div class="posted-recipes">
     <ul v-if="recipes && recipes.length">
         <li v-for="recipe in recipes" :key="recipe.id" class="recipe-item">
-        <a href="/recipe"><h3>{{ recipe.title }}</h3></a>
+        <a v-bind:href="`/recipe/${recipe.recipe_id}`"><h3>{{ recipe.title }}</h3></a>
         <p>{{ recipe.recipeDescription }}</p>
         <p>コメント数: {{ recipe.commentCount }}</p>
         <p>お気に入り数: {{ recipe.favoriteCount }}</p>

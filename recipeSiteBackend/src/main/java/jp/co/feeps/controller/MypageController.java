@@ -27,19 +27,20 @@ public class MypageController {
     @GetMapping("/mypage")
     public ResponseEntity<MypageDto> getMypage(HttpSession session) {
 
-   	// // debug用ユーザー
-    //     aDto.setEmail("user1@example.com");
-    //     aDto.setUserId(1);
-    //     aDto.setUserName("user1");
-    //     aDto.setPassword("pass1");
+   	 // debug用ユーザー
+    accountDto aDto = new accountDto();
+     aDto.setEmail("user1@example.com");
+     aDto.setUserId(1);
+     aDto.setUserName("user1");
+     aDto.setPassword("pass1");
    	
    	// sessionにユーザー情報がなければ404を返す
-		accountDto sessionUser = accountService.getSessionUser(session);
-		if (sessionUser == null) {
-			return ResponseEntity.notFound().build();
-		}
+//		accountDto sessionUser = accountService.getSessionUser(session);
+//		if (sessionUser == null) {
+//			return ResponseEntity.notFound().build();
+//		}
 		
-        MypageDto mypageDto = mypageService.getUserMypage(sessionUser);
+        MypageDto mypageDto = mypageService.getUserMypage(aDto);
         
         return ResponseEntity.ok(mypageDto);
     }

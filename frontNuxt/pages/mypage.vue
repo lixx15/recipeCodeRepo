@@ -8,7 +8,7 @@
           <h2>ユーザー情報</h2>
           <p><strong>名前:</strong> {{ mypageData.userName }}</p>
           <p><strong>Email:</strong> {{ mypageData.email }}</p>
-          <a href="/update">
+          <a href="account/update">
             <p>アカウント変更</p>
           </a>
         </div>
