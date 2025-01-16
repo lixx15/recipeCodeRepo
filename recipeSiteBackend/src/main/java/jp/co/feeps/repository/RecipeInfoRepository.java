@@ -33,4 +33,12 @@ public interface RecipeInfoRepository extends JpaRepository<Recipe, Integer>{
     List<Tags> findTagsByRecipeId(@Param("recipeId") int recipeId);
 	
 	List<Recipe> findByUser_UserId(int userId);
+	
+    @Query("SELECT r FROM Recipe r JOIN r.tags t WHERE t.name = :tagName")
+    List<Recipe> findByTagName(@Param("tagName") String tagName);
+
+    @Query("SELECT r FROM Recipe r JOIN r.tags t WHERE t.name IN :tagNames GROUP BY r.id HAVING COUNT(DISTINCT t.name) = :tagCount")
+    List<Recipe> findByAllTagNames(@Param("tagNames") List<String> tagNames, @Param("tagCount") long tagCount);
+
+    List<Recipe> findByTitle(String recipeTitle);
 }

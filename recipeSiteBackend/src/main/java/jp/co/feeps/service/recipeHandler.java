@@ -6,11 +6,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import jp.co.feeps.DTO.CollectionDto;
 import jp.co.feeps.DTO.CommentsDto;
 import jp.co.feeps.DTO.IngredientsDto;
 import jp.co.feeps.DTO.RecipeDetailsDTO;
+import jp.co.feeps.DTO.RecipeDto;
 import jp.co.feeps.DTO.TagDto;
 import jp.co.feeps.model.Collection;
 import jp.co.feeps.model.Comment;
@@ -112,6 +114,31 @@ public class recipeHandler {
 		return dto;
 	}
 	
-	
-}
+    public List<RecipeDto> getRecipesByTag(String tagName) {
+    	List<RecipeDto> recipeList = new ArrayList<>();
+    	RecipeDto recipeDto = new RecipeDto();
+    	List<Recipe> recipes = recipeinfoRepository.findByTagName(tagName);
+    	
+    	if (CollectionUtils.isEmpty(recipes)) {
+    		return recipeList;
+    	}
+    	
+    	stream()
+    	
+        return recipeList;
+    }
 
+    public List<Recipe> getRecipesByAllTags(List<String> tagNames) {
+        return recipeinfoRepository.findByAllTagNames(tagNames, tagNames.size());
+    }
+	
+    public List<Recipe> findByTitle(String recipeTitle) {
+        return recipeinfoRepository.findByTitle(recipeTitle);
+    }
+    
+    public RecipeDto convertToRecipeDto(Recipe recipe) {
+    	RecipeDto recipeDto = new RecipeDto();
+    	recipeDto.setRecipe_id(recipe.getId());
+    	recipeDto.setFavoriteCount();
+    }
+}
