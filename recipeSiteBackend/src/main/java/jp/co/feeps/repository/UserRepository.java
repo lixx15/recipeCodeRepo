@@ -11,4 +11,9 @@ import jp.co.feeps.model.Users;
 public interface UserRepository extends JpaRepository<Users, Integer> {
 	// ユーザーIDでユーザー情報を取得するメソッド
 	Optional<Users> findById(Integer userId);
+	// ユーザ名でユーザー情報を取得するメソッド
+	Optional<Users> findByUserName(String userName);
+	// メールでユーザー情報を取得するメソッド
+	Optional<Users> findByEmail(String email);
+	
 }
