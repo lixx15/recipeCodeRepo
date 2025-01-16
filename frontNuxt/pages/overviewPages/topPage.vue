@@ -2,7 +2,8 @@
   <div>
     <nav>
       <ul>
-        <li><nuxt-link to="/account/home">Home</nuxt-link></li>
+        <!-- 登録画面に戻る  -->
+        <li><nuxt-link to="/login/login">Home</nuxt-link></li>
         <li>
           <input type="text" v-model="recipeQuery" placeholder="レシピ検索" />
           <button @click="searchRecipes">検索</button>
@@ -13,8 +14,6 @@
         </li>
         <li><nuxt-link to="/mypage">マイページ</nuxt-link></li>
       </ul>
-      <div v-if="userInfo">welcome, {{ userInfo.name }}!</div>
-      <button v-else @click="login">Login</button>
     </nav>
     <div>
       <h2>Featured Recipes</h2>
