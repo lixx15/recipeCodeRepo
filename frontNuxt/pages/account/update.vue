@@ -1,117 +1,90 @@
 <template>
-  <!-- 【修正】共通ヘッダーが必要 -->
-  <!-- 【修正】確認モーダルが必要 -->
   <div class="update-container">
     <h2>アカウント更新</h2>
     <form @submit.prevent="updateUser" class="update-form">
       <form-input
         label="ユーザー名"
         type="text"
-        placeholder="ユーザー名を入力してください"
-        v-model="userName"
+        :placeholder="loggedInUser.name"
+        v-model="user.name"
       />
       <form-input
         label="メールアドレス"
         type="text"
-        placeholder="メールアドレスを入力してください"
-        v-model="email"
+        :placeholder="loggedInUser.email"
+        v-model="user.email"
       />
       <form-input
         label="パスワード"
         type="password"
-        placeholder="パスワードを入力してください"
-        v-model="password"
+        :placeholder="loggedInUser.password"
+        v-model="user.password"
       />
       <button type="submit">更新</button>
     </form>
-    <!-- 【修正】セッション確認用なので消去する必要がある -->
-    <div v-if="sessionUser">
-      <h3>現在のセッション情報</h3>
-      <p>ユーザー名: {{ sessionUser.userName }}</p>
-      <p>メールアドレス: {{ sessionUser.email }}</p>
-    </div>
-    <div v-else>
-      <h3>セッションがありません</h3>
-    </div>
   </div>
 </template>
 
-<script>
-import FormInput from "../../components/FormInput.vue";
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
+import FormInput from "../../components/FormInput.vue";
+import { getSettion } from "../../store/getSettion";
 
-export default {
-  name: "UpdateAccount",
-  components: {
-    FormInput,
-  },
-  data() {
-    return {
-      // セッションのユーザー情報
-      userId: "",
-      userName: "",
-      email: "",
-      password: "",
-      sessionUser: null,
-    };
-  },
-  mounted() {
-    // ページ読み込み時にセッションを取得
-    this.fetchSessionUser();
-  },
-  methods: {
-    // ユーザー更新処理
-    async updateUser() {
-      try {
-        const response = await axios.post(
-          "http://localhost:15151/recipe_cite/update", // 修正: URLをバックエンドの更新エンドポイントに変更
-          {
-            userId: this.userId,
-            userName: this.userName,
-            email: this.email,
-            password: this.password,
-          },
-          // withCredentialsを指定してセッション情報を保持する
-          { withCredentials: true }
-        );
+// セッションからユーザー・ログイン情報を取得
+const { isLoggedIn, loggedInUser } = getSettion();
 
-        if (response.status === 200) {
-          // 【修正】更新成功時に任意のページに遷移する(現在は/home)
-          console.log("更新成功");
-          this.$router.push("/account/home");
-        }
-      } catch (error) {
-        console.error("更新エラー:", error);
-        alert("アカウント情報の更新に失敗しました。");
-      }
-    },
-    // セッション取得処理
-    async fetchSessionUser() {
-      try {
-        const response = await axios.get(
-          "http://localhost:15151/recipe_cite/session",
-          { withCredentials: true }
-        );
-        if (response.data) {
-          // userIdのみ再度取得
-          this.sessionUser = response.data;
-          this.userId = this.sessionUser.userId;
-        } else {
-          this.sessionUser = null;
-        }
-      } catch (error) {
-        console.warn("セッション情報の取得に失敗しました:", error);
-        this.sessionUser = null;
-      }
-    },
-  },
+// ルーター初期化
+const router = useRouter();
+
+// ユーザー情報
+const user = ref({
+  id: "",
+  name: "",
+  email: "",
+  password: "",
+});
+
+// セッションで取得したユーザー情報をそのまま設定
+onMounted(() => {
+  if (loggedInUser.value) {
+    user.value.id = loggedInUser.value.id;
+    user.value.name = loggedInUser.value.name;
+    user.value.email = loggedInUser.value.email;
+    user.value.password = loggedInUser.value.password;
+  }
+});
+
+// ユーザー情報を更新
+const updateUser = async () => {
+  console.log(user);
+  try {
+    const response = await axios.post(
+      "http://localhost:15151/recipe_cite/update",
+      {
+        userId: user.value.id,
+        userName: user.value.name,
+        email: user.value.email,
+        password: user.value.password,
+      },
+      { withCredentials: true }
+    );
+
+    if (response.status === 200) {
+      // セッションを更新するため、再度ログインさせる
+      alert("アカウント情報の更新に成功しました");
+      router.push("/login/login");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("アカウント情報の更新に失敗しました。");
+  }
 };
 </script>
 
 <style scoped>
 .update-container {
-  /* 【修正】横幅のmarginを調整 */
-  /* 【修正】全体の色コード調整 */
   max-width: 1000px;
   margin: 0 auto;
 }
