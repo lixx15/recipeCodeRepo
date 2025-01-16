@@ -12,7 +12,12 @@
 
       <div class="form-group">
         <label for="password">パスワード：</label>
-        <input type="password" id="password" v-model="loginData.password" required />
+        <input
+          type="password"
+          id="password"
+          v-model="loginData.password"
+          required
+        />
       </div>
 
       <!-- ログインボタン -->
@@ -21,51 +26,60 @@
 
     <!-- 登録リンク -->
     <p class="register-link">
-      アカウントを持っていない？ <a href="account/register">新規登録</a>
+      アカウントを持っていない？
+      <router-link to="/account/register">新規登録</router-link>
     </p>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
 // ユーザー入力データを格納するオブジェクト
 const loginData = ref({
-  email: '',
-  password: ''
-})
+  email: "",
+  password: "",
+});
 // ✅ Cookie保存のためのヘルパー関数
 const setCookie = (name, value, days) => {
-  const expires = new Date()
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`
-}
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+};
 // ログインボタンのクリックイベント
 const handleLogin = async () => {
   try {
     // バックエンドのAPIにPOSTリクエストを送信
-    const response = await fetch('http://localhost:15151/recipe_cite/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',  // セッションを有効化するため
-      body: JSON.stringify(loginData.value)
-    })
+    const response = await fetch(
+      "http://localhost:15151/recipe_cite/api/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // セッションを有効化するため
+        body: JSON.stringify(loginData.value),
+      }
+    );
 
     // レスポンスの成功・失敗判定
     if (response.ok) {
-      const responseData = await response.json()
-      setCookie('userName', responseData.userName, 7) // クッキーに保存
-      alert('ログイン成功しました！')
-      
-      window.location.href = '/overviewPages/topPage' // ログイン成功時にリダイレクト
+      const responseData = await response.json();
+      console.log(responseData);
+      // クッキーに保存
+      setCookie("userId", responseData.userId, 7);
+      setCookie("userName", responseData.userName, 7);
+      setCookie("email", responseData.email, 7);
+      setCookie("password", responseData.password, 7);
+      alert("ログイン成功しました！");
+
+      window.location.href = "/overviewPages/topPage"; // ログイン成功時にリダイレクト
     } else {
-      alert('ログイン失敗しました')
+      alert("ログイン失敗しました");
     }
   } catch (error) {
-    console.error('エラー：', error)
-    alert('ログイン時にエラーが発生しました')
+    console.error("エラー：", error);
+    alert("ログイン時にエラーが発生しました");
   }
-}
+};
 </script>
 
 <style scoped>
