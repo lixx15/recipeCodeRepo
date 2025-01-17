@@ -38,6 +38,12 @@ const { isLoggedIn, loggedInUser } = getSettion();
 // ルーター初期化
 const router = useRouter();
 
+// 
+const getCookie = (name) => {
+  const match = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+  return match ? match.pop() : "";
+};
+
 // ユーザー情報
 const user = ref({
   id: "",
@@ -72,10 +78,20 @@ const updateUser = async () => {
     );
 
     if (response.status === 200) {
-      // セッションを更新するため、再度ログインさせる
+      // セッションを更新するため、一度ログアウトさせ再度ログインさせる
       alert("アカウント情報の更新に成功しました");
-      router.push("/login/login");
-    }
+
+      
+      await fetch("http://localhost:15151/recipe_cite/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      alert("ログアウトします");
+      document.cookie =
+        "userName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // ✅ クッキー削除
+      window.location.href = "/cookp@d/login";
+        router.push("/cookp@d/login");
+      }
   } catch (error) {
     console.error(error);
     alert("アカウント情報の更新に失敗しました。");
@@ -84,19 +100,84 @@ const updateUser = async () => {
 </script>
 
 <style scoped>
+/* アカウント更新フォームの全体レイアウト */
 .update-container {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.update-container h2 {
-  margin: 20px 0;
-}
-.update-form {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-family: Arial, sans-serif;
   text-align: center;
 }
-.update-form button {
-  margin: 20px;
-  padding: 15px 30px;
+
+/* タイトルのデザイン */
+h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* フォーム全体のデザイン */
+.update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 入力フィールドのスタイル */
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* プレースホルダーのスタイル */
+input::placeholder {
+  color: #aaa;
+}
+
+/* ボタンのスタイル */
+button {
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
   border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+button:active {
+  background-color: #1e7e34;
+  transform: scale(0.98);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .update-container {
+    margin: 30px auto;
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
 }
 </style>

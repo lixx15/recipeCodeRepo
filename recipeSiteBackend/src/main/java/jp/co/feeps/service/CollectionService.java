@@ -13,7 +13,7 @@ import jp.co.feeps.repository.RecipeInfoRepository;
 import jp.co.feeps.repository.UserRepository;
 
 @Service
-public class CollectionHandler {
+public class CollectionService {
 	@Autowired
 	private CollectionRepository collectionRepository;
 	@Autowired

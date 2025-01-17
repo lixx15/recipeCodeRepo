@@ -51,7 +51,7 @@ const handleLogin = async () => {
   try {
     // バックエンドのAPIにPOSTリクエストを送信
     const response = await fetch(
-      "http://localhost:15151/recipe_cite/api/auth/login",
+      "http://localhost:15151/recipe_cite/login",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -71,7 +71,7 @@ const handleLogin = async () => {
       setCookie("password", responseData.password, 7);
       alert("ログイン成功しました！");
 
-      window.location.href = "/overviewPages/topPage"; // ログイン成功時にリダイレクト
+      window.location.href = "/cookp@d/topPage"; // ログイン成功時にリダイレクト
     } else {
       alert("ログイン失敗しました");
     }

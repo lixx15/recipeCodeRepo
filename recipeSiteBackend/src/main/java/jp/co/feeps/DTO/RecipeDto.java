@@ -1,55 +1,71 @@
 package jp.co.feeps.DTO;
 
+import java.util.List;
+
 public class RecipeDto {
 	
-	private int recipe_id;
+	private int recipeId;
+	private int userId;
 	private String title;
-	private String recipe_description;
-    private String procedureDescription; // 手順説明
-    private String authorName; // 投稿者名
+	private String recipeDescription;
+    private String procedureDescription;
     private int commentCount; //コメント数
     private int favoriteCount; // お気に入り数
+    private List<TagDto> tags;
+    private List<IngredientsDto> ingredients;
+    private List<CommentsDto> comments;
+    private CollectionDto collection_info;
 	
-    public RecipeDto(int id, String title, String recipe_description)
+    
+    public RecipeDto(int recipeId, String title, String recipeDescription)
     {
-    	this.recipe_id = id;
+    	this.recipeId = recipeId;
     	this.title = title;
-    	this.recipe_description = recipe_description;
+    	this.recipeDescription = recipeDescription;
     }
 	public RecipeDto() {
 		// TODO Auto-generated constructor stub
 	}
-	public int getRecipe_id() {
-		return recipe_id;
+	
+	
+	public int getRecipeId() {
+		return recipeId;
 	}
-	public void setRecipe_id(int recipe_id) {
-		this.recipe_id = recipe_id;
+	
+	public void setRecipeId(int recipeId) {
+		this.recipeId = recipeId;
 	}
+	
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	
 	public String getTitle() {
 		return title;
 	}
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getRecipe_description() {
-		return recipe_description;
+	
+	public String getRecipeDescription() {
+		return recipeDescription;
 	}
-	public void setRecipe_description(String recipe_description) {
-		this.recipe_description = recipe_description;
+	
+	public void setRecipeDescription(String recipeDescription) {
+		this.recipeDescription = recipeDescription;
 	}
 	
     public String getProcedureDescription() {
         return procedureDescription;
     }
+    
     public void setProcedureDescription(String procedureDescription) {
         this.procedureDescription = procedureDescription;
-    }
-    
-    public String getAuthorName() {
-        return authorName;
-    }
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
     }
     
     public int getFavoriteCount() {
@@ -66,6 +82,37 @@ public class RecipeDto {
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
+    
+	public List<TagDto> getTags() {
+		return tags;
+	}
+	public void setTags(List<TagDto> tags) {
+		this.tags = tags;
+	}
+	
+	public List<IngredientsDto> getIngredients() {
+		return ingredients;
+	}
+	
+	public void setIngredients(List<IngredientsDto> materials) {
+		this.ingredients = materials;
+	}
+	
+	public List<CommentsDto> getComments() {
+		return comments;
+	}
+	
+	public void setComments(List<CommentsDto> comments) {
+		this.comments = comments;
+	}
+	
+	public CollectionDto getCollection_info() {
+		return collection_info;
+	}
+	
+	public void setCollection_info(CollectionDto collection_info) {
+		this.collection_info = collection_info;
+	}
 	
 	
 }
