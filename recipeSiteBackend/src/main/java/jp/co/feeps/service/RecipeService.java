@@ -26,7 +26,7 @@ import jp.co.feeps.repository.IngredientRepository;
 import jp.co.feeps.repository.RecipeInfoRepository;
 
 @Service
-public class recipeHandler {
+public class RecipeService {
 	@Autowired
 	private RecipeInfoRepository recipeinfoRepository;
 	@Autowired

@@ -1,6 +1,5 @@
 <template>
   <div class="mypage">
-    <!-- Header -->
     <h1>マイページ</h1>
     <div v-if="mypageData" class="content">
       <div class="left-side">
@@ -8,9 +7,6 @@
           <h2>ユーザー情報</h2>
           <p><strong>名前:</strong> {{ mypageData.userName }}</p>
           <p><strong>Email:</strong> {{ mypageData.email }}</p>
-          <a href="account/update">
-            <p>アカウント変更</p>
-          </a>
         </div>
         <Timeline :timeline="mypageData.timeLineItem" />
       </div>
@@ -29,11 +25,17 @@
         </div>
         <section v-if="activeTab === 'posted'" class="posted-recipes">
           <h2>投稿したレシピ</h2>
-          <PostedRecipes :recipes="mypageData.postedRecipes" />
+          <PostedRecipes 
+            :recipes="mypageData.postedRecipes"
+            :userId="mypageData.userId" 
+          />
         </section>
         <section v-if="activeTab === 'favorite'" class="favorite-recipes">
           <h2>お気に入りレシピ</h2>
-          <PostedRecipes :recipes="mypageData.favoriteRecipes" />
+          <PostedRecipes 
+            :recipes="mypageData.favoriteRecipes"
+            :userId="mypageData.userId" 
+          />
         </section>
       </main>
     </div>

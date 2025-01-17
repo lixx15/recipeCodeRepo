@@ -1,6 +1,6 @@
 package jp.co.feeps.DTO;
 
-public class accountDto {
+public class AccountDto {
 	private int userId;
 	private String userName;
 	private String password;

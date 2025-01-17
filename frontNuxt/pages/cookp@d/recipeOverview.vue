@@ -6,14 +6,14 @@
       <p>{{ recipe.description }}</p>
       <div>
         <!-- タッグ情報  -->
-        <strong>Tags:</strong>
+        <strong>タグ:</strong>
         <ul>
           <li v-for="tag in recipe.tags" :key="tag.name">{{ tag.name }}</li>
         </ul>
       </div>
       <div>
         <!-- 食材情報  -->
-        <strong>Ingredients:</strong>
+        <strong>材料:</strong>
         <ul>
           <li v-for="ingredient in recipe.ingredients" :key="ingredient.name">
             {{ ingredient.name }}: {{ ingredient.quantity }}
@@ -22,7 +22,7 @@
       </div>
       <div>
         <!-- コメント欄と投稿インプット -->
-        <strong>Comments:</strong>
+        <strong>投稿されたコメント:</strong>
         <ul>
           <li v-for="comment in recipe.comments" :key="comment.post_datetime">
             {{ comment.content }} ({{ comment.post_datetime }})
@@ -37,10 +37,10 @@
     </div>
     <div class="recipe-recommendations">
       <!-- 関連レシピ -->
-      <h2>Similar Recipes</h2>
+      <h2>関連レシピ</h2>
       <ul>
         <li v-for="similar in similarRecipes" :key="similar.id">
-          <a :href="`/overviewPages/recipeOverview?recipeId=${similar.recipe_id}&userId=${route.query.userId}`" target="_blank"> {{ similar.title }} </a>
+          <a :href="`/cookp@d/recipeOverview?recipeId=${similar.recipe_id}&userId=${route.query.userId}`" target="_blank"> {{ similar.title }} </a>
           <p>{{ similar.description }}</p>
         </li>
       </ul>
@@ -104,7 +104,7 @@
   
   // お気に入り状態チェック
   function updateFavoriteText() {
-    favoriteText.value = recipe.value.collection_info ? 'Unfavorite' : 'Favorite';
+    favoriteText.value = recipe.value.collection_info ? 'お気に入り解除' : 'お気に入り';
   }
   
   // nuxt Date format ->  sqldatabase Date format
@@ -158,3 +158,119 @@
     }
   }
   </script>
+<style scoped>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.recipe-details {
+  flex: 2;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-details h1 {
+  margin-bottom: 16px;
+  font-size: 24px;
+  color: #333;
+}
+
+.recipe-details p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.recipe-details strong {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  margin-bottom: 8px;
+  padding: 8px;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: calc(100% - 100px);
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+button {
+  margin: 15px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.recipe-recommendations {
+  flex: 1;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-recommendations h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  color: #333;
+}
+
+.recipe-recommendations ul li a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.recipe-recommendations ul li a:hover {
+  text-decoration: underline;
+}
+
+.recipe-recommendations ul li p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #555;
+}
+</style>
