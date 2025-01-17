@@ -30,8 +30,9 @@
         </ul>
       </div>
       <div>
+        <strong>コメントの投稿:</strong>
         <input type="text" v-model="newComment" placeholder="Add a comment">
-        <button @click="submitComment">Submit Comment</button>
+        <button @click="submitComment">投稿</button>
       </div>
       <button @click="toggleFavorite">{{ favoriteText }}</button>
     </div>

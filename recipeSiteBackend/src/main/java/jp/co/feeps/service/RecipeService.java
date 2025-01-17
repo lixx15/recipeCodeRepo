@@ -117,7 +117,7 @@ public class RecipeService {
 	        dto.setIngredients(inDTOs);
         }
 
-        List<Comment> comments = commentRepository.findByRecipeIdAndUserUserId(recipe_id, user_id);
+        List<Comment> comments = commentRepository.findByRecipeId(recipe_id);
         if(comments != null)
         {
 	        List<CommentsDto> coDTOs = new ArrayList<>();
