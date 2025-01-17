@@ -41,6 +41,8 @@ public class RecipeService {
 	private TagRepository tagRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private IngredientRepository ingredientsrentRepository;
 	
 	
 	// 一覧画面用
@@ -153,8 +155,6 @@ public class RecipeService {
 	public Recipe addRecipeWithDetails(RecipeDto recipeDto) {
 		// 入力情報をエンティティにセット
 	    Recipe newRecipe = new Recipe();
-	    String d = recipeDto.getRecipeDescription();
-	    String p = recipeDto.getProcedureDescription();
 	    newRecipe.setTitle(recipeDto.getTitle());
 	    newRecipe.setRecipe_description(recipeDto.getRecipeDescription());
 	    newRecipe.setProcedure_description(recipeDto.getProcedureDescription());
@@ -204,43 +204,55 @@ public class RecipeService {
 	
     public Recipe updateRecipe(RecipeDto recipeDto) throws Exception {
         // 既存のレシピを取得
-        Optional<Recipe> existingRecipe = recipeinfoRepository.findById(recipeDto.getRecipeId());
-        if (!existingRecipe.isPresent()) {
+        Optional<Recipe> existingRecipeOptional = recipeinfoRepository.findById(recipeDto.getRecipeId());
+        if (!existingRecipeOptional.isPresent()) {
             throw new Exception("レシピが見つかりません");
         }
 
-        // レシピの更新
-        Recipe updatedRecipe = existingRecipe.get();
-        updatedRecipe.setTitle(recipeDto.getTitle());
-        updatedRecipe.setRecipe_description(recipeDto.getRecipeDescription());
-        updatedRecipe.setProcedure_description(recipeDto.getProcedureDescription());
+        Recipe existingRecipe = existingRecipeOptional.get();
 
-	    // タグを取得または作成してセットに追加
-	    // タグを保存
-	    List<String> tagNames = recipeDto.getTags().stream()
-	    											.map(tag -> tag.getName())
-	    											.collect(Collectors.toList());
-	    
-	    Set<Tags> tags = tagNames.stream()
-	            .map(tagName -> {
-	                Optional<Tags> optionalTag = tagRepository.findByName(tagName);
-	                if (optionalTag.isPresent()) {
-	                    // タグが存在する場合は取得
-	                    return optionalTag.get();
-	                } else {
-	                    // タグが存在しない場合は新規作成
-	                    Tags newTag = new Tags();
-	                    newTag.setName(tagName);
-	                    return tagRepository.save(newTag);
-	                }
-	            })
-	            .collect(Collectors.toSet());
+        // レシピ基本情報を更新
+        existingRecipe.setTitle(recipeDto.getTitle());
+        existingRecipe.setRecipe_description(recipeDto.getRecipeDescription());
+        existingRecipe.setProcedure_description(recipeDto.getProcedureDescription());
 
-	    // レシピにタグをセット
-	    updatedRecipe.setTags(tags);
+        // タグの更新処理
+        for (int i = 0; i < recipeDto.getTags().size(); i++) {
+            String tagName = ((List<TagDto>)recipeDto.getTags()).get(i).getName();
+            Optional<Tags> existingTag = tagRepository.findByName(tagName);
+            if (!existingTag.isPresent()) {
+                // 新しいタグがあれば保存
+                Tags newTag = new Tags();
+                newTag.setName(tagName);
+                existingRecipe.getTags().add(tagRepository.save(newTag));
+            } else {
+                // 既存タグを設定
+                existingRecipe.getTags().add(existingTag.get());
+            }
+        }
+		
+		
+        // 材料の更新処理
+        // 既存の材料を削除
+        ingredientsrentRepository.deleteByRecipeId(existingRecipe.getId());
+        
+        List<RecipeIngredients> ingredients = recipeDto.getIngredients().stream()
+        												.map(ingredient -> {
+        													RecipeIngredients recipeIngredients = new RecipeIngredients();
+        													recipeIngredients.setTitle(ingredient.getName());
+        													recipeIngredients.setQuantity(ingredient.getQuantity());
+        													return recipeIngredients;
+        												})
+        												.collect(Collectors.toList());
 
-        // レシピの更新保存
-        return recipeinfoRepository.save(updatedRecipe);
+        // 新しい材料を登録
+        for (RecipeIngredients ingredient : ingredients) {
+            ingredient.setRecipe(existingRecipe); // レシピとの関連付け
+            ingredientsrentRepository.save(ingredient);
+        }
+
+        // レシピの保存
+        return recipeinfoRepository.save(existingRecipe);
     }
     
 }
