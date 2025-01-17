@@ -1,11 +1,10 @@
 package jp.co.feeps.service;
 
-import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.feeps.DTO.accountDto;
+import jakarta.servlet.http.HttpSession;
+import jp.co.feeps.DTO.AccountDto;
 import jp.co.feeps.model.Users;
 import jp.co.feeps.repository.UserRepository;
 
@@ -15,7 +14,7 @@ public class AccountService {
 	private UserRepository userRepository;
 
 	// アカウント登録処理
-	public accountDto registerUser(accountDto accountDto, HttpSession session) {
+	public AccountDto registerUser(AccountDto accountDto, HttpSession session) {
 		//入力チェック
 		if (accountDto == null || accountDto.getUserName() == null || accountDto.getEmail() == null
 				|| accountDto.getPassword() == null) {
@@ -30,7 +29,7 @@ public class AccountService {
 		userRepository.save(user);
 
 		// 登録したユーザー情報をDTOに変換
-		accountDto registeredUser = new accountDto();
+		AccountDto registeredUser = new AccountDto();
 		registeredUser.setUserId(user.getUserId());
 		registeredUser.setUserName(user.getUserName());
 		registeredUser.setEmail(user.getEmail());
@@ -43,7 +42,7 @@ public class AccountService {
 	}
 
 	// アカウント更新処理
-	public accountDto updateUser(accountDto accountDto, HttpSession session) {
+	public AccountDto updateUser(AccountDto accountDto, HttpSession session) {
 		// ユーザー情報をDBから取得
 		Users user = userRepository.findById(accountDto.getUserId())
 				.orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません"));
@@ -55,7 +54,7 @@ public class AccountService {
 		userRepository.save(user);
 
 		// 更新したユーザー情報をDTOに変換
-		accountDto updatedUser = new accountDto();
+		AccountDto updatedUser = new AccountDto();
 		updatedUser.setUserId(user.getUserId());
 		updatedUser.setUserName(user.getUserName());
 		updatedUser.setEmail(user.getEmail());
@@ -68,9 +67,9 @@ public class AccountService {
 	}
 
 	// セッション情報取得
-	public accountDto getSessionUser(HttpSession session) {
+	public AccountDto getSessionUser(HttpSession session) {
 		// セッションから"registeredUser"属性を取得
-		accountDto registeredUser = (accountDto) session.getAttribute("registeredUser");
+		AccountDto registeredUser = (AccountDto) session.getAttribute("registeredUser");
 
 		// セッションにユーザー情報があるかチェック
 		if (registeredUser == null) {
@@ -78,13 +77,42 @@ public class AccountService {
 		}
 
 		// セッションから取得したユーザー情報を新しいDTOに設定して返す
-		accountDto responseUser = new accountDto();
+		AccountDto responseUser = new AccountDto();
 		responseUser.setUserId(registeredUser.getUserId());
 		responseUser.setUserName(registeredUser.getUserName());
 		responseUser.setEmail(registeredUser.getEmail());
 		responseUser.setPassword(registeredUser.getPassword());
 
 		return responseUser;
+	}
+	
+	// ログイン処理
+	public AccountDto loginUser(String email, String password, HttpSession session) {
+		// データからユーザーを捜す
+		Users user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません"));
+
+		// パスワードマッチング
+		if (!user.getPassword().equals(password)) {
+			throw new IllegalArgumentException("パスワードが正しくありません");
+		}
+
+		// 创建返回的DTO并保存用户信息到会话中
+		AccountDto loggedInUser = new AccountDto();
+		loggedInUser.setUserId(user.getUserId());
+		loggedInUser.setUserName(user.getUserName());
+		loggedInUser.setEmail(user.getEmail());
+		loggedInUser.setPassword(user.getPassword());
+
+		session.setAttribute("registeredUser", loggedInUser);
+
+		return loggedInUser;
+	}
+
+	// ログアウト処理
+	public void logoutUser(HttpSession session) {
+		session.removeAttribute("registeredUser"); // ユーザー情報を除去
+		session.invalidate(); //セッションを無効
 	}
 
 }

@@ -2,7 +2,6 @@
   <div>
     <nav>
       <ul>
-        <li><nuxt-link to="/">Home</nuxt-link></li>
         <li>
           <input type="text" v-model="recipeQuery" placeholder="レシピ検索" />
           <button @click="searchRecipes">検索</button>
@@ -11,18 +10,16 @@
           <input type="text" v-model="tagQuery" placeholder="タグ検索" />
           <button @click="searchByTag">検索</button>
         </li>
-        <li><nuxt-link to="/my-page">マイページ</nuxt-link></li>
       </ul>
-      <div v-if="userInfo">welcome, {{ userInfo.name }}!</div>
-      <button v-else @click="login">Login</button>
     </nav>
     <div>
-      <h2>Featured Recipes</h2>
+      <h2>おすすめレシピ</h2>
       <ul>
+        <!-- フォールレシピ展示  -->
         <li v-for="recipe in recipes" :key="recipe.id">
           <nuxt-link
             :to="{
-              name: 'overviewPages-recipeOverview',
+              name: 'cookp@d-recipeOverview',
               query: { recipeId: recipe.id, userId: userInfo.userId },
             }"
           >
@@ -35,6 +32,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -116,16 +114,103 @@ onMounted(() => {
 </script>
 
 <style scoped>
+nav {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 nav ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
+
 nav li {
-  display: inline-block;
-  margin-right: 10px;
+  display: flex;
+  align-items: center;
 }
-input,
+
+input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  width: 200px;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+}
+
 button {
-  margin: 5px;
+  margin-left: 15px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+div {
+  margin-top: 20px;
+}
+
+h2 {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-bottom: 16px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: box-shadow 0.2s;
+}
+
+li:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
 }
 </style>

@@ -1,3 +1,10 @@
+
+DROP DATABASE recipe;
+CREATE DATABASE recipe;
+DROP USER 'recipe_root'@'localhost';
+CREATE USER 'recipe_root'@'localhost' IDENTIFIED BY '123456';
+GRANT ALL PRIVILEGES ON recipe.* TO 'recipe_root'@'localhost';
+FLUSH PRIVILEGES;
 -- ユーザーテーブル (users)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,23 +69,37 @@ CREATE TABLE favorites (
 );
 
 -- Inserting data into users
-INSERT INTO users (user_name, password, email) VALUES 
-('user1', 'pass1', 'user1@example.com'),
-('user2', 'pass2', 'user2@example.com'),
-('user3', 'pass3', 'user3@example.com'),
-('user4', 'pass4', 'user4@example.com'),
-('user5', 'pass5', 'user5@example.com');
+INSERT INTO users (user_name, password, email) VALUES
+('Alice', 'password1', 'alice@example.com'),
+('Bob', 'password2', 'bob@example.com'),
+('Charlie', 'password3', 'charlie@example.com'),
+('David', 'password4', 'david@example.com'),
+('Eve', 'password5', 'eve@example.com');
+
+INSERT INTO ingredients (name, quantity, recipe_id) VALUES
+('米', '2合', 1), -- レシピID 1: おにぎり
+('海苔', '3枚', 1),
+('梅干し', '2個', 1),
+('うどん', '200g', 2), -- レシピID 2: かけうどん
+('つゆ', '300ml', 2),
+('ネギ', '適量', 2),
+('鮭', '1切れ', 3), -- レシピID 3: 焼き鮭
+('塩', '少々', 3),
+('しょうゆ', '適量', 3),
+('鶏もも肉', '300g', 4), -- レシピID 4: 親子丼
+('卵', '2個', 4),
+('玉ねぎ', '1個', 4),
+('ご飯', '2杯', 4),
+('キャベツ', '1/4玉', 5), -- レシピID 5: 焼きそば
+('豚バラ肉', '150g', 5),
+('焼きそばソース', '100ml', 5),
+('紅しょうが', '適量', 5);
 
 -- Inserting data into recipes
-INSERT INTO recipes (title, recipe_description, procedure_description, user_id) VALUES 
-('Recipe1', 'Description1', 'Procedure1', 1),
-('Recipe2', 'Description2', 'Procedure2', 2),
-('Recipe3', 'Description3', 'Procedure3', 3),
-('Recipe4', 'Description4', 'Procedure4', 4),
-('Recipe5', 'Description5', 'Procedure5', 5);
-DROP DATABASE recipe;
-CREATE DATABASE recipe;
-DROP USER 'recipe_root'@'localhost';
-CREATE USER 'recipe_root'@'localhost' IDENTIFIED BY '123456';
-GRANT ALL PRIVILEGES ON recipe.* TO 'recipe_root'@'localhost';
-FLUSH PRIVILEGES;
+INSERT INTO recipes (title, recipe_description, procedure_description, user_id) VALUES
+('おにぎり', '簡単で美味しいおにぎりの作り方', '1. ご飯を炊く\n2. 好きな具材を入れる\n3. 海苔で巻く', 1),
+('かけうどん', 'シンプルな和風のうどん', '1. うどんを茹でる\n2. つゆを温める\n3. うどんに注いでネギを添える', 2),
+('焼き鮭', '朝食にぴったりの焼き鮭', '1. 鮭に塩を振る\n2. フライパンで焼く\n3. しょうゆを少しかける', 3),
+('親子丼', '鶏肉と卵を使った丼物', '1. 玉ねぎを炒める\n2. 鶏肉を加えて煮る\n3. 卵を溶いてかける', 4),
+('焼きそば', '野菜たっぷりの焼きそば', '1. キャベツと豚肉を炒める\n2. 焼きそば麺を加える\n3. ソースで味付けして紅しょうがを添える', 5);
+

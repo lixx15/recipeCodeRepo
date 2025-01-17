@@ -17,12 +17,12 @@ public interface RecipeInfoRepository extends JpaRepository<Recipe, Integer>{
 	
 	Optional<Recipe> findById(int recipe_id);
 	
-	@Query(value = "SELECT r.id, r.title, r.recipe_description, r.procedure_description "
-			+ "FROM recipes r "
-			+ "JOIN recipe_tags rt ON r.id = rt.recipe_id "
-			+ "JOIN tags t ON rt.tag_id = t.id WHERE t.name IN :tags "
-			+ "GROUP BY r.id, r.title, r.recipe_description, r.procedure_description "
-			+ "HAVING COUNT(DISTINCT t.name) = :count", nativeQuery = true)
+	@Query(value = "SELECT r.id, r.title, r.recipe_description, r.procedure_description, r.user_id "
+	        + "FROM recipes r "
+	        + "JOIN recipe_tags rt ON r.id = rt.recipe_id "
+	        + "JOIN tags t ON rt.tag_id = t.id WHERE t.name IN :tags "
+	        + "GROUP BY r.id, r.title, r.recipe_description, r.procedure_description, r.user_id "
+	        + "HAVING COUNT(DISTINCT t.name) = :count", nativeQuery = true)
 	List<Recipe> findRecipesWithAllTags(@Param("tags") List<String> tags, @Param("count") int count);
 	
 	

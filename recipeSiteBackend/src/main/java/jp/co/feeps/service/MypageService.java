@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import jp.co.feeps.DTO.AccountDto;
 import jp.co.feeps.DTO.MypageDto;
 import jp.co.feeps.DTO.RecipeDto;
-import jp.co.feeps.DTO.accountDto;
 import jp.co.feeps.model.Comment;
 import jp.co.feeps.model.Favorites;
 import jp.co.feeps.model.Recipe;
@@ -34,10 +34,10 @@ public class MypageService {
     
     /**
      * マイページデータを取得する
-     * @param session ログイン中のユーザー情報
+     * @param user ログイン中のユーザー情報
      * @return MypageDto（ユーザー情報、投稿レシピ、タイムラインなど）
      */
-    public MypageDto getUserMypage(accountDto user) {
+    public MypageDto getUserMypage(AccountDto user) {
     	// ログインユーザIDをもとに検索を行うためIDは変数に保持
     	int userId = user.getUserId();
         

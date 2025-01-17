@@ -12,7 +12,7 @@ import jp.co.feeps.repository.RecipeInfoRepository;
 import jp.co.feeps.repository.UserRepository;
 
 @Service
-public class CommentHandler {
+public class CommentService {
 	@Autowired
 	private CommentRepository commentRepository;
 	@Autowired
