@@ -76,13 +76,8 @@ public class Recipe {
 		return procedure_description;
 	}
 
-	public void setProcedure_description1(String procedure_description) {
+	public void setProcedure_description(String procedure_description) {
 		this.procedure_description = procedure_description;
-	}
-
-	public void setProcedure_description(String procedure_description2) {
-		// TODO Auto-generated method stub
-		
 	}
 	
     public Users getUser() {
@@ -93,5 +88,11 @@ public class Recipe {
         this.user = user;
     }
 	
-	
+    public Set<Tags> getTags() {
+        return tags;
+    }
+    
+    public void setTags(Set<Tags> tags) {
+        this.tags = tags;
+    }
 }

@@ -80,9 +80,10 @@ public class MypageService {
     	
     	// レシピIdでコメントの取得を行うためIDを保持
     	int recipeId = recipe.getId();
-        recipesDto.setRecipe_id(recipeId);
+        recipesDto.setRecipeId(recipeId);
         recipesDto.setTitle(recipe.getTitle());
-        recipesDto.setRecipe_description(recipe.getRecipe_description());
+        recipesDto.setRecipeDescription(recipe.getRecipe_description());
+        recipesDto.setProcedureDescription(recipe.getProcedure_description());
         
         // レシピが持つコメントの取得を行いnullチェック後コメント数をセット
         List<Comment> postedComments = commentRepository.findByRecipeId(recipeId);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpSession;
 import jp.co.feeps.DTO.AccountDto;
 import jp.co.feeps.DTO.CommentsDto;
-import jp.co.feeps.DTO.RecipeDetailsDTO;
 import jp.co.feeps.DTO.RecipeDto;
 import jp.co.feeps.model.Recipe;
 import jp.co.feeps.service.CollectionService;
@@ -59,8 +59,8 @@ public class RecipeController {
 	}
 	
 	@RequestMapping("/getRecipeDetails")
-	public ResponseEntity<RecipeDetailsDTO> GetRecipeDetails(@RequestParam int recipe_id, @RequestParam int user_id , HttpSession session) {
-		RecipeDetailsDTO res1 = recipeServer.getRecipeDetails(recipe_id, user_id);
+	public ResponseEntity<RecipeDto> GetRecipeDetails(@RequestParam int recipe_id, @RequestParam int user_id , HttpSession session) {
+		RecipeDto res1 = recipeServer.getRecipeDetails(recipe_id, user_id);
 		return ResponseEntity.ok(res1);
 	}
 	
@@ -87,7 +87,23 @@ public class RecipeController {
 		return ResponseEntity.ok(res);
 	}
 	
+	@PostMapping("/add-recipe-with-detail")
+	public ResponseEntity<String> addRecipeWithDetails(@RequestBody RecipeDto recipeDto) {
+	    Recipe recipe = recipeServer.addRecipeWithDetails(recipeDto);
+	    return ResponseEntity.ok("Recipe added successfully with ID: " + recipe.getId());
+	}
 	
+    @PutMapping("/update-recipe")
+    public ResponseEntity<Recipe> updateRecipe(@RequestBody RecipeDto recipeDto) {
+        try {
+            // レシピを更新
+            Recipe updatedRecipe = recipeServer.updateRecipe(recipeDto);
+            return ResponseEntity.ok(updatedRecipe);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    
 
 //	//TO DO test code	
 //	@GetMapping("/test")

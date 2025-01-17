@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import jakarta.transaction.Transactional;
 import jp.co.feeps.model.Recipe;
 import jp.co.feeps.model.Tags;
 
@@ -33,4 +35,15 @@ public interface RecipeInfoRepository extends JpaRepository<Recipe, Integer>{
     List<Tags> findTagsByRecipeId(@Param("recipeId") int recipeId);
 	
 	List<Recipe> findByUser_UserId(int userId);
+	
+	// レシピに関連するタグの関連を解除するメソッド
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Recipe r WHERE r.id = :recipeId")
+	void removeRecipeTags(@Param("recipeId") int recipeId);
+	
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Recipe r WHERE r.id = :recipeId")
+	void deleteRecipe(@Param("recipeId") int recipeId);
 }

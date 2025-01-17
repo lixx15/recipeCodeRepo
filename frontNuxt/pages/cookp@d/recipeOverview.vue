@@ -3,7 +3,13 @@
     <div class="recipe-details">
       <!-- noew recipe's detiails  -->
       <h1>{{ recipe.title }}</h1>
-      <p>{{ recipe.description }}</p>
+      <p>{{ recipe.recipeDescription }}</p>
+      <div>
+        <strong>手順:</strong>
+        <ul>
+          <li>{{ recipe.procedureDescription }}</li>
+        </ul>
+      </div>
       <div>
         <!-- タッグ情報  -->
         <strong>タグ:</strong>
@@ -35,13 +41,23 @@
         <button @click="submitComment">投稿</button>
       </div>
       <button @click="toggleFavorite">{{ favoriteText }}</button>
+      <div v-if="recipe.userId == route.query.userId">
+        <nuxt-link
+            :to="{
+              name: 'recipe-input',
+              query: { recipeId: recipe.recipeId, userId: route.query.userId },
+            }"
+          >
+            <strong>更新</strong>
+          </nuxt-link>
+      </div>
     </div>
     <div class="recipe-recommendations">
       <!-- 関連レシピ -->
       <h2>関連レシピ</h2>
       <ul>
         <li v-for="similar in similarRecipes" :key="similar.id">
-          <a :href="`/cookp@d/recipeOverview?recipeId=${similar.recipe_id}&userId=${route.query.userId}`" target="_blank"> {{ similar.title }} </a>
+          <a :href="`/cookp@d/recipeOverview?recipeId=${similar.recipeId}&userId=${route.query.userId}`" target="_blank"> {{ similar.title }} </a>
           <p>{{ similar.description }}</p>
         </li>
       </ul>
@@ -143,7 +159,7 @@
       const response = await axios.post('http://localhost:15151/recipe_cite/subbmitComment', {
         content: newComment.value,
         post_datetime: formatDateForMySQL(),
-        recipe_id: recipe.value.id
+        recipe_id: recipe.value.recipeId
       }, {
         withCredentials: true 
       });

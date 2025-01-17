@@ -32,22 +32,34 @@ public class RecipeIngredients {
 	public int getId() {
 		return id;
 	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	public String getTitle() {
 		return title;
 	}
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
 	public String getQuantity() {
 		return quantity;
 	}
+	
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
-
+	
+	public Recipe getRecipe() {
+		return recipe;
+	}
+	
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
+	}
 	
 	
 }

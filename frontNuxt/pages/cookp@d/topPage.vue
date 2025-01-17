@@ -13,6 +13,7 @@
       </ul>
     </nav>
     <div>
+      <a href="/recipe/input" class="post">レシピ投稿</a>
       <h2>おすすめレシピ</h2>
       <ul>
         <!-- フォールレシピ展示  -->
@@ -25,8 +26,8 @@
           >
             <strong>{{ recipe.title }}</strong>
           </nuxt-link>
-          <p>Description: {{ recipe.recipe_description }}</p>
-          <p>Procedure: {{ recipe.procedure_description }}</p>
+          <p>レシピ説明: {{ recipe.recipe_description }}</p>
+          <p>材料: {{ recipe.procedure_description }}</p>
         </li>
       </ul>
     </div>
@@ -212,5 +213,25 @@ p {
   margin: 4px 0;
   font-size: 14px;
   color: #555;
+}
+
+.post {
+  text-align: center;
+  padding: 6px 12px;
+  background-color: rgb(0, 153, 255);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.post:hover {
+  background-color: rgb(0, 110, 255);
+}
+
+.post:active {
+  transform: scale(0.98);
 }
 </style>

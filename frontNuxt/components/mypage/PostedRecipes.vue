@@ -5,13 +5,13 @@
           <nuxt-link
             :to="{
               name: 'cookp@d-recipeOverview',
-              query: { recipeId: recipe.recipe_id, userId: userId },
+              query: { recipeId: recipe.recipeId, userId: userId },
             }"
           >
             <strong>{{ recipe.title }}</strong>
           </nuxt-link>
-          <p>Description: {{ recipe.recipe_description }}</p>
-          <p>Procedure: {{ recipe.procedure_description }}</p>
+          <p>レシピ説明: {{ recipe.recipeDescription }}</p>
+          <p>材料: {{ recipe.procedureDescription }}</p>
         <p>コメント数: {{ recipe.commentCount }}</p>
         <p>お気に入り数: {{ recipe.favoriteCount }}</p>
         </li>
